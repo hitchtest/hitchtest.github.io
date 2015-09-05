@@ -132,20 +132,29 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 
     case "$lsb_dist" in
         ubuntu|debian)
-            dpkg --status python python-dev python-setuptools python-virtualenv python3 > /dev/null 2>&1
+            dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev > /dev/null 2>&1
             if [ $? != 0 ]; then
                 echo I need to run:
-                echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3"
-                sudo apt-get install python python3 python-dev python-setuptools python-virtualenv
+                echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev"
+                sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev
             fi
         ;;
 
         fedora|redhat|centos)
-            rpm -q python python-dev python-setuptools python-virtualenv python3 > /dev/null 2>&1
+            rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel > /dev/null 2>&1
             if [ $? != 0 ]; then
                 echo I need to run:
                 echo "sudo yum install python python-devel python-setuptools python-virtualenv python3"
-                sudo yum install python python-devel python-setuptools python-virtualenv python3
+                sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel
+            fi
+        ;;
+
+        arch)
+            pacman -Qs python3 python python-setuptools python-virtualenv python > /dev/null 2>&1
+            if [ $? != 0 ]; then
+                echo I need to run:
+                echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python"
+                sudo pacman -Qs python3 python python-setuptools python-virtualenv python
             fi
         ;;
     esac
