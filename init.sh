@@ -142,7 +142,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
             if test_for_error dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool ; then
                 echo I need to run:
                 echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool"
-                sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev
+                sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev automake libtool
             fi
         ;;
 
@@ -150,7 +150,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
             if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel libtool ; then
                 echo I need to run:
                 echo "sudo yum install python python-devel python-setuptools python-virtualenv python3 automake libtool"
-                sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel
+                sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel automake libtool
             fi
         ;;
 
@@ -158,7 +158,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
             if test_for_error pacman -Qs python3 python python-setuptools python-virtualenv python libtool ; then
                 echo I need to run:
                 echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python automake libtool"
-                sudo pacman -Qs python3 python python-setuptools python-virtualenv python
+                sudo pacman -Qs python3 python python-setuptools python-virtualenv python automake libtool
             fi
         ;;
     esac
