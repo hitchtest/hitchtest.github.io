@@ -139,25 +139,25 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 
     case "$lsb_dist" in
         ubuntu|debian)
-            if test_for_error dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev ; then
+            if test_for_error dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool ; then
                 echo I need to run:
-                echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev"
+                echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool"
                 sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev
             fi
         ;;
 
         fedora|redhat|centos)
-            if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel ; then
+            if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel libtool ; then
                 echo I need to run:
-                echo "sudo yum install python python-devel python-setuptools python-virtualenv python3"
+                echo "sudo yum install python python-devel python-setuptools python-virtualenv python3 automake libtool"
                 sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel
             fi
         ;;
 
         arch)
-            if test_for_error pacman -Qs python3 python python-setuptools python-virtualenv python ; then
+            if test_for_error pacman -Qs python3 python python-setuptools python-virtualenv python libtool ; then
                 echo I need to run:
-                echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python"
+                echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python automake libtool"
                 sudo pacman -Qs python3 python python-setuptools python-virtualenv python
             fi
         ;;
