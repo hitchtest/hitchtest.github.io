@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -e
 
 echo "Installing and initializing hitch..."
@@ -12,30 +12,36 @@ command_exists() {
     command -v "$@" > /dev/null 2>&1
 }
 
+test_for_error() {
+    $@ > /dev/null 2>&1
+    RETURNCODE=$?
+    if [ $RETURNCODE == 0 ]; then
+        false
+    else
+        true
+    fi
+}
+
 checkpythonenvironment() {
-    which python > /dev/null
-    if [ $? != 0 ]; then
+    if ! command_exists python; then
         echo "Python must be installed in order to install hitch."
         help
         exit 1
     fi
 
-    which python3 > /dev/null
-    if [ $? != 0 ]; then
+    if ! command_exists python3; then
         echo "Python 3 (with the name python3) must be installed in order to install hitch."
         help
         exit 1
     fi
 
-    which pip > /dev/null
-    if [ $? != 0 ]; then
+    if ! command_exists pip; then
        echo "pip must be installed in order to install hitch."
        help
        exit 1
     fi
 
-    which virtualenv > /dev/null
-    if [ $? != 0 ]; then
+    if ! command_exists virtualenv; then
        echo "virtualenv must be installed in order to install hitch."
        help
        exit 1
@@ -45,7 +51,7 @@ checkpythonenvironment() {
     DOTVERSION=$(expr substr "$FULLVER" 1 3)
     VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
     if [ $VERSION -lt 26 ]; then
-       echo "Hitch will not work on versions of python < 2.6 (or versions 3.0 -> 3.2)"
+       echo "Hitch will not work with python versions 3.0.x, 3.1.x, 3.2.x or versions lower than 2.6."
        echo "Try upgrading your system to the latest possible version and then try running this script again."
        help
        exit 1
@@ -55,7 +61,7 @@ checkpythonenvironment() {
     DOTVERSION=$(expr substr "$FULLVER" 1 3)
     VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
     if [ $VERSION -gt 30 ] && [ $VERSION -lt 33 ]; then
-       echo "Hitch will not work on python 3 versions below 3.3"
+       echo "Hitch will not work with python 3 versions below 3.3"
        echo "Try upgrading your system to the latest possible version and then try again."
        echo "If you need help, try raising an issue at https://github.com/hitchtest/hitch/issues"
        exit 1
@@ -76,8 +82,7 @@ initandrun() {
 }
 
 if [ "$(uname)" == "Darwin" ]; then
-    which brew
-    if [ $? == 0 ]; then
+    if command_exists brew ; then
         for pkg in python python3 ; do
             if brew list -1 | grep -q "^${pkg}\$"; then
                 echo "Package '$pkg' is installed"
@@ -96,7 +101,9 @@ if [ "$(uname)" == "Darwin" ]; then
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     lsb_dist=''
     if command_exists lsb_release; then
-        lsb_dist="$(lsb_release -si)"
+        if [ "$(lsb_release 2>&1)" != "No LSB modules are available." ]; then
+            lsb_dist="$(lsb_release -si)"
+        fi
     fi
     if [ -z "$lsb_dist" ] && [ -r /etc/lsb-release ]; then
         lsb_dist="$(. /etc/lsb-release && echo "$DISTRIB_ID")"
@@ -132,8 +139,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
 
     case "$lsb_dist" in
         ubuntu|debian)
-            dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev > /dev/null 2>&1
-            if [ $? != 0 ]; then
+            if test_for_error dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev ; then
                 echo I need to run:
                 echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev"
                 sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev
@@ -141,8 +147,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
         ;;
 
         fedora|redhat|centos)
-            rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel > /dev/null 2>&1
-            if [ $? != 0 ]; then
+            if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel ; then
                 echo I need to run:
                 echo "sudo yum install python python-devel python-setuptools python-virtualenv python3"
                 sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel
@@ -150,8 +155,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
         ;;
 
         arch)
-            pacman -Qs python3 python python-setuptools python-virtualenv python > /dev/null 2>&1
-            if [ $? != 0 ]; then
+            if test_for_error pacman -Qs python3 python python-setuptools python-virtualenv python ; then
                 echo I need to run:
                 echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python"
                 sudo pacman -Qs python3 python python-setuptools python-virtualenv python
@@ -160,8 +164,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     esac
 
     checkpythonenvironment
-    which pipsi > /dev/null
-    if [ $? != 0 ]; then
+    if command_exists pipsi ; then
         pipsi install --upgrade hitch
     else
         echo "This will install/upgrade a single, small package with no dependencies:"
