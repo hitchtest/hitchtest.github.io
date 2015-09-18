@@ -5,7 +5,6 @@ echo "Installing and initializing hitch..."
 
 help() {
     echo "If you need help or you think this script has a problem, please raise an issue at https://github.com/hitchtest/hitch/issues"
-    echo "If you want to figure out how to install manually, try looking at https://hitchtest.readthedocs.org/en/latest/faq/install.html"
 }
 
 command_exists() {
@@ -52,7 +51,7 @@ checkpythonenvironment() {
     VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
     if [ $VERSION -lt 26 ]; then
        echo "Hitch will not work with python versions 3.0.x, 3.1.x, 3.2.x or versions lower than 2.6."
-       echo "Try upgrading your system to the latest possible version and then try running this script again."
+       echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
        help
        exit 1
     fi
@@ -62,8 +61,8 @@ checkpythonenvironment() {
     VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
     if [ $VERSION -gt 30 ] && [ $VERSION -lt 33 ]; then
        echo "Hitch will not work with python 3 versions below 3.3"
-       echo "Try upgrading your system to the latest possible version and then try again."
-       echo "If you need help, try raising an issue at https://github.com/hitchtest/hitch/issues"
+       echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
+       help
        exit 1
     fi
 }
@@ -155,10 +154,10 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
         ;;
 
         arch)
-            if test_for_error pacman -Qs python3 python python-setuptools python-virtualenv python libtool ; then
+            if test_for_error pacman -Q python python-setuptools python-virtualenv python libtool ; then
                 echo I need to run:
-                echo "sudo pacman -Qs python3 python python-setuptools python-virtualenv python automake libtool"
-                sudo pacman -Qs python3 python python-setuptools python-virtualenv python automake libtool
+                echo "sudo pacman -Sy python python-setuptools python-virtualenv python automake libtool"
+                sudo pacman -Sy python python-setuptools python-virtualenv python automake libtool
             fi
         ;;
     esac
