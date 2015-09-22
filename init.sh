@@ -47,8 +47,7 @@ checkpythonenvironment() {
     fi
 
     FULLVER=$(python -c 'import sys; print(sys.version)')
-    DOTVERSION=$(expr substr "$FULLVER" 1 3)
-    VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
+    VERSION=$(echo $FULLVER | sed 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1\2\3/g')
     if [ $VERSION -lt 26 ]; then
        echo "Hitch will not work with python versions 3.0.x, 3.1.x, 3.2.x or versions lower than 2.6."
        echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
@@ -57,8 +56,7 @@ checkpythonenvironment() {
     fi
 
     FULLVER=$(python3 -c 'import sys; print(sys.version)')
-    DOTVERSION=$(expr substr "$FULLVER" 1 3)
-    VERSION=$(expr substr "$DOTVERSION" 1 1)$(expr substr "$DOTVERSION" 3 3)
+    VERSION=$(echo $FULLVER | sed 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1\2\3/g')
     if [ $VERSION -gt 30 ] && [ $VERSION -lt 33 ]; then
        echo "Hitch will not work with python 3 versions below 3.3"
        echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
@@ -80,6 +78,8 @@ initandrun() {
     fi
 }
 
+UNAMES=$(uname -s)
+
 if [ "$(uname)" == "Darwin" ]; then
     if command_exists brew ; then
         for pkg in python python3 ; do
@@ -97,7 +97,7 @@ if [ "$(uname)" == "Darwin" ]; then
         echo Hitch requires brew to be installed to run on the Mac.
         exit 1
     fi
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+elif [ "$(echo $UNAMES | sed 's/\(^.....\).*/\1/g')" == "Linux" ]; then
     lsb_dist=''
     if command_exists lsb_release; then
         if [ "$(lsb_release 2>&1)" != "No LSB modules are available." ]; then
