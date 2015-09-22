@@ -148,8 +148,8 @@ elif [ "$(echo $UNAMES | sed 's/\(^.....\).*/\1/g')" == "Linux" ]; then
         fedora|redhat|centos)
             if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel libtool ; then
                 echo I need to run:
-                echo "sudo yum install python python-devel python-setuptools python-virtualenv python3 automake libtool"
-                sudo yum -y install python python-devel python-setuptools python-virtualenv python3 python3-devel automake libtool
+                echo "sudo yum install python python-devel python-setuptools python-virtualenv python-pip python3 python3-devel automake libtool"
+                sudo yum -y install python python-devel python-setuptools python-virtualenv python-pip python3 python3-devel automake libtool
             fi
         ;;
 
