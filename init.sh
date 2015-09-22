@@ -86,7 +86,7 @@ if [ "$(uname)" == "Darwin" ]; then
             if brew list -1 | grep -q "^${pkg}\$"; then
                 echo "Package '$pkg' is installed"
             else
-                brew install python python3
+                brew install python python3 libtool automake cmake
             fi
         done
         pip install --upgrade pip setuptools virtualenv
@@ -141,7 +141,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
             if test_for_error dpkg --status python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool ; then
                 echo I need to run:
                 echo "sudo apt-get install python python-dev python-setuptools python-virtualenv python3 python3-dev automake libtool"
-                sudo apt-get install python python3 python-dev python-setuptools python-virtualenv python3-dev automake libtool
+                sudo apt-get install -y python python3 python-dev python-setuptools python-virtualenv python3-dev automake libtool
             fi
         ;;
 
@@ -149,7 +149,7 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
             if test_for_error rpm -q python python-dev python-setuptools python-virtualenv python3 python3-devel libtool ; then
                 echo I need to run:
                 echo "sudo yum install python python-devel python-setuptools python-virtualenv python3 automake libtool"
-                sudo yum install python python-devel python-setuptools python-virtualenv python3 python3-devel automake libtool
+                sudo yum -y install python python-devel python-setuptools python-virtualenv python3 python3-devel automake libtool
             fi
         ;;
 
@@ -163,13 +163,9 @@ elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     esac
 
     checkpythonenvironment
-    if command_exists pipsi ; then
-        pipsi install --upgrade hitch
-    else
-        echo "This will install/upgrade a single, small package with no dependencies:"
-        echo sudo pip install --upgrade hitch
-        sudo pip install -U hitch
-    fi
+    echo "This will install/upgrade a single, small package with no dependencies:"
+    echo sudo pip install --upgrade hitch
+    sudo pip install -U hitch
     initandrun
 else
     echo Hitch has not been tested on "$(uname)".
