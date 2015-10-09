@@ -66,6 +66,7 @@ checkpythonenvironment() {
 }
 
 initandrun() {
+    hitch cleanpkg
     hitch clean
     hitch init
 
