@@ -28,12 +28,6 @@ checkpythonenvironment() {
         exit 1
     fi
 
-    if ! command_exists python3; then
-        echo "Python 3 (with the name python3) must be installed in order to install hitch."
-        help
-        exit 1
-    fi
-
     if ! command_exists pip; then
        echo "pip must be installed in order to install hitch."
        help
