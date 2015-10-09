@@ -33,30 +33,6 @@ checkpythonenvironment() {
        help
        exit 1
     fi
-
-    if ! command_exists virtualenv; then
-       echo "virtualenv must be installed in order to install hitch."
-       help
-       exit 1
-    fi
-
-    FULLVER=$(python -c 'import sys; print(sys.version)')
-    VERSION=$(echo $FULLVER | sed 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1\2\3/g')
-    if [ $VERSION -lt 26 ]; then
-       echo "Hitch will not work with python versions 3.0.x, 3.1.x, 3.2.x or versions lower than 2.6."
-       echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
-       help
-       exit 1
-    fi
-
-    FULLVER=$(python3 -c 'import sys; print(sys.version)')
-    VERSION=$(echo $FULLVER | sed 's/\([0-9]\+\)\.\([0-9]\+\)\.\([0-9]\+\).*/\1\2\3/g')
-    if [ $VERSION -gt 30 ] && [ $VERSION -lt 33 ]; then
-       echo "Hitch will not work with python 3 versions below 3.3"
-       echo "You probably need to upgrade your system to something more recent, or use a more up to date distro to continue."
-       help
-       exit 1
-    fi
 }
 
 initandrun() {
